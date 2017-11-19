@@ -1,0 +1,12 @@
+Source: record challenge/2013/set-a/a02
+val has 4 rows (signals) and 60000 columns (samples/signal)
+Duration:     1:00
+Sampling frequency: 1000 Hz  Sampling interval: 0.001 sec
+Row	Signal	Gain	Base	Units
+1	AECG1	10	0	uV
+2	AECG2	10	0	uV
+3	AECG3	10	0	uV
+4	AECG4	10	0	uV
+
+To convert from raw units to the physical units shown
+above, subtract 'base' and divide by 'gain'.

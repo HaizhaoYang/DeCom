@@ -1,0 +1,12 @@
+Source: record macecgdb/test01_00s
+val has 4 rows (signals) and 4000 columns (samples/signal)
+Duration:     0:08
+Sampling frequency: 500 Hz  Sampling interval: 0.002 sec
+Row	Signal	Gain	Base	Units
+1	ECG 1	100	0	mV
+2	ECG 2	100	0	mV
+3	ECG 3	100	0	mV
+4	ECG 4	100	0	mV
+
+To convert from raw units to the physical units shown
+above, subtract 'base' and divide by 'gain'.
