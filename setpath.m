@@ -33,7 +33,6 @@ file_path = file_path(1:(tmp(end)-1));
 
 % Foulder for all soource files recursively
 addpath(genpath([file_path 'Applications']));
-addpath(genpath([file_path 'Data']));
 addpath(genpath([file_path 'results']));
 addpath(genpath([file_path 'Source']));
 addpath(genpath([file_path 'External']));
