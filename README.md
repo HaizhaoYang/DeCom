@@ -30,11 +30,11 @@ The folder GeneralModeDecom is a collection of Matlab routines for generalized m
 
 [4] H. Yang and L. Ying. Synchrosqueezed curvelet transform for two-dimensional mode decomposition. SIAM Journal on Mathematical Analysis, 46(3):2052–2083, 2014.
 
-[5] H. Yang.  Statistical analysis of synchrosqueezed transforms, 2014. preprint, arXiv:1410.5939 [math.ST].
+[5] H. Yang.  Statistical analysis of synchrosqueezed transforms, To appear, Applied and Computational Harmonic Analysis, 2017. 
 
 [6] H. Yang, J. Lu, W. P. Brown, I. Daubechies, and L. Ying, Quantitative Canvas Weave Analysis Using 2D Synchrosqueezed Transforms. IEEE Signal Processing Magazine, Special Issue on Art Investigations, 2015. 
 
-[7] J. Lu, B. Wirth and H. Yang. Compbining 2d synchrosqueezed wave packet transforms with optimization for crystal image analysis. Journal of the Mechanics and Physics of Solids, pp. –, 2016. [Online]. Available: http://www.sciencedirect.com/science/article/pii/S0022509616300023
+[7] J. Lu, B. Wirth and H. Yang. Compbining 2d synchrosqueezed wave packet transforms with optimization for crystal image analysis. Journal of the Mechanics and Physics of Solids, Volume 89, April 2016, Pages 194-210.
 
 [8] H. Yang. Oscillatory data analysis and fast algorithms for integral operators, Ph.D. thesis, Stanford University, 2015.
 
