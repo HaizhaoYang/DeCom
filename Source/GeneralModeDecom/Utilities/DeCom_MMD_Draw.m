@@ -1,4 +1,4 @@
-function [shape,component,Hcoef,flag,idx,iter,iterDR] = DeCom_MMD(sig,x,numGroup,insAmp,insFreq,insPhase,opt)
+function [shape,component,Hcoef,flag,idx,iter] = DeCom_MMD_Draw(sig,x,numGroup,insAmp,insFreq,insPhase,opt)
 % This code implements the robust iterative regression algorithm in
 % "Multiresolution Mode Decomposition (MMD) for Adaptive Time Series Analysis"
 % by Haizhao Yang.
@@ -15,7 +15,6 @@ function [shape,component,Hcoef,flag,idx,iter,iterDR] = DeCom_MMD(sig,x,numGroup
 % opt.numSweep is the maximum number of sweeping in the multiresolution
 % frequency domain
 % opt.accuracy is the accuracy parameter for the convergence of HMD
-% opt.eps_diff is the accuracy parameter for convergence
 % opt.ampErrBandWidth is the band width of the amplitude estimation error in
 % the frequency domain.
 % opt.shapeMethod, method for single shape estimation
@@ -66,9 +65,9 @@ function [shape,component,Hcoef,flag,idx,iter,iterDR] = DeCom_MMD(sig,x,numGroup
 % idx       - the indices of significant components above
 %             opt.lowestCompEng.
 % iter      - the number of sweeping in practice
-% iterDR - the total number of diffeomorphism regression
 %
 % By Haizhao Yang, 2017
+
 
 if ~any(strcmp('ampErrBandWidth',fieldnames(opt))), opt.ampErrBandWidth = '20'; end;
 if ~any(strcmp('lowestCompEng',fieldnames(opt))), opt.lowestCompEng = 0; end;
@@ -83,7 +82,6 @@ errorOld = 1e10;
 errSweepOld = 1e10;
 flag = [0,0];
 isCoefBreak = 0;
-iterDR = 0;
 N = numel(sig);
 Hcoef = cell(1,numGroup);
 for cntc = 1:numGroup
@@ -109,11 +107,18 @@ end
 vec = [0,vec];
 numSweep = opt.numSweep;
 normSig = norm(sig);
+
+compdraw = cell(3,numGroup);
+for cnt1 = 1:3
+    for cnt2 = 1:numGroup
+        compdraw{cnt1,cnt2} = zeros(1,N);
+    end
+end
+
 for cnts = 1:numSweep
     for cnt = 1:numel(vec)
         opt.isCos = 1; opt.ampFreq = vec(cnt);
-        [shapeIn,compTemp,coef,errorRec,~,iter] = shapeDiffusion(sig,numGroup,insAmp,insFreq,insPhase,opt);
-        iterDR = iterDR + iter*numGroup;
+        [shapeIn,compTemp,coef,errorRec] = shapeDiffusion(sig,numGroup,insAmp,insFreq,insPhase,opt);
         if vec(cnt) == 0
             error = errorRec(end);%todo
         else
@@ -123,9 +128,15 @@ for cnts = 1:numSweep
             if vec(cnt) == 0
                 componentIn{cntc} = compTemp{cntc};
                 shape{cntc}.s0 = shape{cntc}.s0 + shapeIn{cntc}*coef{cntc};
+                
+                compdraw{1,cntc} = compdraw{1,cntc} + compTemp{cntc};
             else
                 componentIn{cntc} = componentIn{cntc} + compTemp{cntc};
                 shape{cntc}.scn{cnt-1} = shape{cntc}.scn{cnt-1} + shapeIn{cntc}*coef{cntc};
+                
+                if vec(cnt) == 1
+                    compdraw{2,cntc} = compdraw{2,cntc} + compTemp{cntc};
+                end
                 
                 if vec(cnt) == 1
                     if norm(shape{cntc}.scn{cnt-1})>norm(shape{cntc}.s0)*opt.decayBndExpCoef
@@ -135,18 +146,49 @@ for cnts = 1:numSweep
                 end
             end
             sig = sig - compTemp{cntc};
+            if abs(vec(cnt))<=1
+                pic = figure(100+cntc);
+                if vec(cnt) == 0
+                    plot(x,compdraw{1,cntc},'b'); axis tight; xlabel('time');ylabel('signal intensity');
+                else
+                    plot(x,compdraw{2,cntc},'b'); axis tight; xlabel('time');ylabel('signal intensity');
+                end
+                
+                pbaspect([10 1 1]); set(pic, 'Position', [200, 200, 1200, 200]);
+                str = sprintf('%scos%d_%d',opt.name,cntc,vec(cnt));
+                saveas(pic,[str,'.fig']);
+                set(gca, 'FontSize', 16);
+                b=get(gca);
+                set(b.XLabel, 'FontSize', 16);set(b.YLabel, 'FontSize', 16);set(b.ZLabel, 'FontSize', 16);set(b.Title, 'FontSize', 16);
+                print(gcf, '-depsc', str);      command = sprintf('epstopdf %s.eps',str);      system(command);
+            end
         end
         if isCoefBreak
             break;
         end
         if vec(cnt)~=0
             opt.isCos = 0; opt.ampFreq = vec(cnt);
-            [shapeIn,compTemp,coef,errorRec,~,iter] = shapeDiffusion(sig,numGroup,insAmp,insFreq,insPhase,opt);
-            iterDR = iterDR + iter*numGroup;
+            [shapeIn,compTemp,coef,errorRec] = shapeDiffusion(sig,numGroup,insAmp,insFreq,insPhase,opt);
             for cntc = 1:numGroup;
                 componentIn{cntc} = componentIn{cntc} + compTemp{cntc};
                 shape{cntc}.ssn{cnt-1} = shape{cntc}.ssn{cnt-1} + shapeIn{cntc}*coef{cntc};
                 sig = sig - compTemp{cntc};
+                
+                if vec(cnt) == 1
+                    compdraw{3,cntc} = compdraw{3,cntc} + compTemp{cntc};
+                end
+                
+                if abs(vec(cnt))<=1
+                    pic = figure(200+cntc);
+                    plot(x,compdraw{3,cntc},'b'); axis tight; xlabel('time');ylabel('signal intensity');
+                    pbaspect([10 1 1]); set(pic, 'Position', [200, 200, 1200, 200]);
+                    str = sprintf('%ssin%d_%d',opt.name,cntc,vec(cnt));
+                    saveas(pic,[str,'.fig']);
+                    set(gca, 'FontSize', 16);
+                    b=get(gca);
+                    set(b.XLabel, 'FontSize', 16);set(b.YLabel, 'FontSize', 16);set(b.ZLabel, 'FontSize', 16);set(b.Title, 'FontSize', 16);
+                    print(gcf, '-depsc', str);      command = sprintf('epstopdf %s.eps',str);      system(command);
+                end
                 
                 if vec(cnt) == 1
                     if norm(shape{cntc}.ssn{cnt-1})>norm(shape{cntc}.s0)*opt.decayBndExpCoef
@@ -160,6 +202,36 @@ for cnts = 1:numSweep
         if isCoefBreak
             break;
         end
+        %         if vec(cnt) == 0 % remove the components if the leading component is weak
+        %             ick = zeros(1,numGroup);
+        %             for cntc = 1:numGroup
+        %                 if norm(componentIn{cntc})/sqrt(N) < opt.lowestCompEng
+        %                     ick(cntc) = 1;
+        %                 end
+        %             end
+        %             if numel(find(ick>0.5)) % lower than lowestCompEng
+        %                 idx = find(ick<0.5);
+        %                 numGroup = numel(idx);
+        %                 flag(2) = numGroup;
+        %                 shapeNew = cell(1,numGroup);
+        %                 compNew = cell(1,numGroup);
+        %                 HcoefNew = cell(1,numGroup);
+        %                 for cntc = 1:numGroup
+        %                     shapeNew{cntc} = shapeIn{idx(cntc)};
+        %                     compNew{cntc} = componentIn{idx(cntc)};
+        %                     HcoefNew{cntc} = Hcoef{idx(cntc)};
+        %                     insAmp(cntc,:) = insAmp(idx(cntc),:);
+        %                     insFreq(cntc,:) = insFreq(idx(cntc),:);
+        %                     insPhase(cntc,:) = insPhase(idx(cntc),:);
+        %                 end
+        %                 shapeIn = shapeNew;
+        %                 componentIn = compNew;
+        %                 Hcoef = HcoefNew;
+        %                 insAmp = insAmp(1:numGroup,:);
+        %                 insFreq = insFreq(1:numGroup,:);
+        %                 insPhase = insPhase(1:numGroup,:);
+        %             end
+        %         end
         if errorOld < error
             flag(1) = 1;
             break;
@@ -176,7 +248,7 @@ for cnts = 1:numSweep
     end
     cnts
     errSweep = norm(sig)/normSig
-    if errSweep > errSweepOld - opt.eps_diff, break; end; % cannot improve any more
+    if errSweep > errSweepOld - opt.eps_diff, break; end;
     errSweepOld = errSweep;
     if errSweep < opt.accuracy, break; end;
 end

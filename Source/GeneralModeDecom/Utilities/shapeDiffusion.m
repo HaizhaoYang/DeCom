@@ -32,6 +32,14 @@ function [shape,component,coef,errorRec,SL2Rec,iter,flag] = shapeDiffusion(sig,n
 % opt.para.order is the order parameter for the regression method BSFK
 % opt.para.Ls is the length of the vector representing the shape function
 %
+% For the DSA method:
+% opt.para.Ls is the length of the vector representing the shape function
+% opt.para.bandWidth is the band width parameter for the shape function
+% opt.para.diffeoMethod:
+%             'intpl', use the spline interpolation to compute
+%             diffeomorphisms
+%             'nufft', use the NUFFT to compute diffeomorphisms
+%
 % Optional inputs:
 % shapeTrue - the ground true shapes for the purpose of debuging
 %
@@ -108,7 +116,15 @@ while iter< maxiter && error> eps_error && delta>eps_error && ...
     SL2 = 0;
     delta = 0;
     for cntGroup = 1:numGroup
-        [shapeInLoop{cntGroup},componentInLoop{cntGroup},SL2temp,ier] = shapeRegBSFK(prefac{cntGroup}.*f,insAmp(cntGroup,:),insPhase(cntGroup,:),opt.para);
+        switch opt.shapeMethod
+            case 1
+                if numel(bandWidthbk) > 0
+                    opt.para.bandWidth = bandWidthbk(cntGroup);
+                end
+                [shapeInLoop{cntGroup},componentInLoop{cntGroup},SL2temp,ier] = shapeRegDSA(prefac{cntGroup}.*f,insAmp(cntGroup,:),insFreq(cntGroup,:),insPhase(cntGroup,:),opt.para);
+            case 2
+                [shapeInLoop{cntGroup},componentInLoop{cntGroup},SL2temp,ier] = shapeRegBSFK(prefac{cntGroup}.*f,insAmp(cntGroup,:),insPhase(cntGroup,:),opt.para);
+        end
         if opt.ampFreq ~=0
             componentInLoop{cntGroup} = prefac{cntGroup}.*componentInLoop{cntGroup}*2;
             shapeInLoop{cntGroup} = shapeInLoop{cntGroup}*2;

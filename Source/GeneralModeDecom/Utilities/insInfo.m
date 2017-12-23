@@ -23,7 +23,8 @@ rad = opt.rad;
 loc = find(T_f<NM^2);
 T_f(loc) = 0;
 if (opt.show)
-    pic = figure;imagesc([0 1],[1 max(ed)]*res,log(1+real(T_f(1:max(ed),:))));title('log(SST) in selected range');
+   % pic = figure;imagesc([0 1],[1 max(ed)]*res,log(1+real(T_f(1:max(ed),:))));title('log(SST) in selected range');
+    pic = figure;imagesc(T_f(1:max(ed),:));title('log(SST) in selected range');
     xlabel('Time (Second)');ylabel('Frequency (Hz)');axis xy;
     axis square; colormap (1-gray);
     if any(strcmp('figName',fieldnames(opt)))
