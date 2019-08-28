@@ -1,5 +1,5 @@
-% This code generates Figure 1 and 2 of the paper
-% "A Fast Algorithm for Multiresolution Mode Decomposition"
+% This code generates Figure 1 to 3 of the paper
+% "Multiresolution Mode Decomposition for Adaptive Time Series Analysis"
 %
 % by Haizhao Yang.
 
@@ -36,16 +36,18 @@ if (1)
     
     % correct phases
     insPhase = phaseShift(insPhase,peaks);
-    save('./results/RDSA_fig1.mat','-v7.3');
+    save('./results/MMD_fig1.mat','-v7.3');
 end
 
+% perform MMD
+
 if (1)
-    load ./results/RDSA_fig1.mat;
+    load ./results/MMD_fig1.mat;
     opt.maxiter = 200;
     opt.eps_error = 1e-6;
     opt.show = 0;
     opt.iterStyle = 'GS';
-    opt.shapeMethod = 1;
+    opt.shapeMethod = 2;
     opt.eps_diff = 1e-6;
     opt.ampErrBandWidth = 40;
     opt.numSweep = 10;
@@ -56,7 +58,7 @@ if (1)
             opt.para.bandWidth = 10;
             opt.para.diffeoMethod = 'nufft';
         case 2
-            opt.para.nknots = 20;
+            opt.para.nknots = 10;
             opt.para.knotremoval_factor= 1.0001;
             opt.para.order = 3;
             opt.para.Ls = 1000;
@@ -67,73 +69,61 @@ if (1)
     
     %% Modified to regenerate the signal to test if it is actually accurate enough
     Sig = comp{1} + comp{2};
-
-    N1 = N/2; N2 = N/8+N/2;
+    opt.show = 1;
+    insInfo(sig-Sig,opt);
+    
+    N1 = 1; N2 = N;
     Ntotal = length(signal.pleth.y);
     pic = figure;
     plot((N1:N2)/Ntotal*480,comp{1}(N1:N2),'b'); axis tight; xlabel('time');ylabel('signal intensity');
-    pbaspect([1 1 1]); set(pic, 'Position', [200, 200, 200, 200]);axis([N1/Ntotal*480, N2/Ntotal*480,-15,15]);
-    saveas(pic,'./results/RDSA_fig1_2_2_comp1.fig');
+    pbaspect([10 1 1]); set(pic, 'Position', [200, 200, 1200, 200]);axis([N1/Ntotal*480, N2/Ntotal*480,-15,15]);
+    saveas(pic,'./results/MMD_fig1_comp1.fig');
     set(gca, 'FontSize', 16);
     b=get(gca);
     set(b.XLabel, 'FontSize', 16);set(b.YLabel, 'FontSize', 16);set(b.ZLabel, 'FontSize', 16);set(b.Title, 'FontSize', 16);
-    str = './results/RDSA_fig1_2_2_comp1';
+    str = './results/MMD_fig1_comp1';
     print(gcf, '-depsc', str);      command = sprintf('epstopdf %s.eps',str);      system(command);
     
     pic = figure;
     plot((N1:N2)/Ntotal*480,comp{2}(N1:N2),'b'); axis tight; xlabel('time');ylabel('signal intensity');
-    pbaspect([1 1 1]); set(pic, 'Position', [200, 200, 200, 200]);axis([N1/Ntotal*480, N2/Ntotal*480,-15,15]);
-    saveas(pic,'./results/RDSA_fig1_2_2_comp2.fig');
+    pbaspect([10 1 1]); set(pic, 'Position', [200, 200, 1200, 200]);axis([N1/Ntotal*480, N2/Ntotal*480,-15,15]);
+    saveas(pic,'./results/MMD_fig1_comp2.fig');
     set(gca, 'FontSize', 16);
     b=get(gca);
     set(b.XLabel, 'FontSize', 16);set(b.YLabel, 'FontSize', 16);set(b.ZLabel, 'FontSize', 16);set(b.Title, 'FontSize', 16);
-    str = './results/RDSA_fig1_2_2_comp2';
+    str = './results/MMD_fig1_comp2';
     print(gcf, '-depsc', str);      command = sprintf('epstopdf %s.eps',str);      system(command);
     
     pic = figure;
     plot((N1:N2)/Ntotal*480,sig(N1:N2),'b'); axis tight; xlabel('time');ylabel('signal intensity');
-    pbaspect([1 1 1]); set(pic, 'Position', [200, 200, 200, 200]);axis([N1/Ntotal*480, N2/Ntotal*480,-15,15]);
-    saveas(pic,'./results/RDSA_fig1_2_2_org.fig');
+    pbaspect([10 1 1]); set(pic, 'Position', [200, 200, 1200, 200]);axis([N1/Ntotal*480, N2/Ntotal*480,-15,15]);
+    saveas(pic,'./results/MMD_fig1_org.fig');
     set(gca, 'FontSize', 16);
     b=get(gca);
     set(b.XLabel, 'FontSize', 16);set(b.YLabel, 'FontSize', 16);set(b.ZLabel, 'FontSize', 16);set(b.Title, 'FontSize', 16);
-    str = './results/RDSA_fig1_2_2_org';
+    str = './results/MMD_fig1_org';
     print(gcf, '-depsc', str);      command = sprintf('epstopdf %s.eps',str);      system(command);
     
     pic = figure;
     plot((N1:N2)/Ntotal*480,sig(N1:N2)-Sig(N1:N2),'b'); axis tight; xlabel('time');ylabel('signal intensity');
-    pbaspect([1 1 1]); set(pic, 'Position', [200, 200, 200, 200]);%axis([N1/Ntotal*480, N2/Ntotal*480,-15,15]);
-    saveas(pic,'./results/RDSA_fig1_2_2_res.fig');
+    pbaspect([10 1 1]); set(pic, 'Position', [200, 200, 1200, 200]);%axis([N1/Ntotal*480, N2/Ntotal*480,-15,15]);
+    saveas(pic,'./results/MMD_fig1_res.fig');
     set(gca, 'FontSize', 16);
     b=get(gca);
     set(b.XLabel, 'FontSize', 16);set(b.YLabel, 'FontSize', 16);set(b.ZLabel, 'FontSize', 16);set(b.Title, 'FontSize', 16);
-    str = './results/RDSA_fig1_2_2_res';
+    str = './results/MMD_fig1_res';
     print(gcf, '-depsc', str);      command = sprintf('epstopdf %s.eps',str);      system(command);
-    
-    res = sig-Sig;
-    XC = xcorr(res)/length(res);
-    XC = XC/norm(XC);
-    LL = length(XC);
-    pic = figure;
-    plot([-(LL-1)/2:(LL-1)/2],XC,'b'); axis tight;  ylabel('autocorrelation');
-    pbaspect([1 1 1]); set(pic, 'Position', [200, 200, 200, 200]);
-    saveas(pic,'./results/RDSA_fig1_2_2_psd.fig');
-    set(gca, 'FontSize', 16);
-    b=get(gca);
-    set(b.XLabel, 'FontSize', 16);set(b.YLabel, 'FontSize', 16);set(b.ZLabel, 'FontSize', 16);set(b.Title, 'FontSize', 16);
-    str = './results/RDSA_fig1_2_2_psd';
-    print(gcf, '-depsc', str);      command = sprintf('epstopdf %s.eps',str);      system(command);
-    
 end
 
+% perform GMD
 
 if (1)
-    load ./results/RDSA_fig1.mat;
+    load ./results/MMD_fig1.mat;
     opt.maxiter = 200;
     opt.eps_error = 1e-6;
     opt.show = 0;
     opt.iterStyle = 'GS';
-    opt.shapeMethod = 1;
+    opt.shapeMethod = 2;
     opt.eps_diff = 1e-6;
     opt.ampErrBandWidth = 0;
     opt.numSweep = 1;
@@ -144,49 +134,56 @@ if (1)
             opt.para.bandWidth = 10;
             opt.para.diffeoMethod = 'nufft';
         case 2
-            opt.para.nknots = 20;
+            opt.para.nknots = 10;
             opt.para.knotremoval_factor= 1.0001;
             opt.para.order = 3;
             opt.para.Ls = 1000;
     end
     
     % test example: two components
-    [shape,comp] = DeCom_MMD(sig,x,numGroup,insAmp,insFreq,insPhase,opt);
+    [shape1,comp1] = DeCom_MMD(sig,x,numGroup,insAmp,insFreq,insPhase,opt);
     
     %% Modified to regenerate the signal to test if it is actually accurate enough
-    Sig = comp{1} + comp{2};
+    Sig1 = comp1{1} + comp1{2};
+    save('./results/MMD_fig1.mat','-v7.3');
     
+    insInfo(sig-Sig1,opt);
+    
+    N1 = 1; N2 = N;
     Ntotal = length(signal.pleth.y);
     pic = figure;
-    plot((N1:N2)/Ntotal*480,comp{1}(N1:N2),'b'); axis tight; xlabel('time');ylabel('signal intensity');
-    pbaspect([1 1 1]); set(pic, 'Position', [200, 200, 200, 200]);axis([N1/Ntotal*480, N2/Ntotal*480,-15,15]);
-    saveas(pic,'./results/RDSA_fig1_2_2_comp1_p2.fig');
+    plot((N1:N2)/Ntotal*480,comp1{1}(N1:N2),'b'); axis tight; xlabel('time');ylabel('signal intensity');
+    pbaspect([10 1 1]); set(pic, 'Position', [200, 200, 1200, 200]);axis([N1/Ntotal*480, N2/Ntotal*480,-15,15]);
+    saveas(pic,'./results/MMD_fig1_comp1_p2.fig');
     set(gca, 'FontSize', 16);
     b=get(gca);
     set(b.XLabel, 'FontSize', 16);set(b.YLabel, 'FontSize', 16);set(b.ZLabel, 'FontSize', 16);set(b.Title, 'FontSize', 16);
-    str = './results/RDSA_fig1_2_2_comp1_p2';
+    str = './results/MMD_fig1_comp1_p2';
     print(gcf, '-depsc', str);      command = sprintf('epstopdf %s.eps',str);      system(command);
     
     pic = figure;
-    plot((N1:N2)/Ntotal*480,comp{2}(N1:N2),'b'); axis tight; xlabel('time');ylabel('signal intensity');
-    pbaspect([1 1 1]); set(pic, 'Position', [200, 200, 200, 200]);axis([N1/Ntotal*480, N2/Ntotal*480,-15,15]);
-    saveas(pic,'./results/RDSA_fig1_2_2_comp2_p2.fig');
+    plot((N1:N2)/Ntotal*480,comp1{2}(N1:N2),'b'); axis tight; xlabel('time');ylabel('signal intensity');
+    pbaspect([10 1 1]); set(pic, 'Position', [200, 200, 1200, 200]);axis([N1/Ntotal*480, N2/Ntotal*480,-15,15]);
+    saveas(pic,'./results/MMD_fig1_comp2_p2.fig');
     set(gca, 'FontSize', 16);
     b=get(gca);
     set(b.XLabel, 'FontSize', 16);set(b.YLabel, 'FontSize', 16);set(b.ZLabel, 'FontSize', 16);set(b.Title, 'FontSize', 16);
-    str = './results/RDSA_fig1_2_2_comp2_p2';
+    str = './results/MMD_fig1_comp2_p2';
     print(gcf, '-depsc', str);      command = sprintf('epstopdf %s.eps',str);      system(command);
     
     pic = figure;
-    plot((N1:N2)/Ntotal*480,sig(N1:N2)-Sig(N1:N2),'b'); axis tight; xlabel('time');ylabel('signal intensity');
-    pbaspect([1 1 1]); set(pic, 'Position', [200, 200, 200, 200]);%axis([N1/Ntotal*480, N2/Ntotal*480,-15,15]);
-    saveas(pic,'./results/RDSA_fig1_2_2_res_p2.fig');
+    plot((N1:N2)/Ntotal*480,sig(N1:N2)-Sig1(N1:N2),'b'); axis tight; xlabel('time');ylabel('signal intensity');
+    pbaspect([10 1 1]); set(pic, 'Position', [200, 200, 1200, 200]);%axis([N1/Ntotal*480, N2/Ntotal*480,-15,15]);
+    saveas(pic,'./results/MMD_fig1_res_p2.fig');
     set(gca, 'FontSize', 16);
     b=get(gca);
     set(b.XLabel, 'FontSize', 16);set(b.YLabel, 'FontSize', 16);set(b.ZLabel, 'FontSize', 16);set(b.Title, 'FontSize', 16);
-    str = './results/RDSA_fig1_2_2_res_p2';
+    str = './results/MMD_fig1_res_p2';
     print(gcf, '-depsc', str);      command = sprintf('epstopdf %s.eps',str);      system(command);
-    
+end
+
+% perform statistical tests
+if (1)
     res = sig-Sig;
     XC = xcorr(res)/length(res);
     XC = XC/norm(XC);
@@ -194,26 +191,37 @@ if (1)
     pic = figure;
     plot([-(LL-1)/2:(LL-1)/2],XC,'b'); axis tight;  ylabel('autocorrelation');
     pbaspect([1 1 1]); set(pic, 'Position', [200, 200, 200, 200]);
-    saveas(pic,'./results/RDSA_fig1_2_2_psd2.fig');
+    saveas(pic,'./results/MMD_fig1_psd1.fig');
     set(gca, 'FontSize', 16);
     b=get(gca);
     set(b.XLabel, 'FontSize', 16);set(b.YLabel, 'FontSize', 16);set(b.ZLabel, 'FontSize', 16);set(b.Title, 'FontSize', 16);
-    str = './results/RDSA_fig1_2_2_psd2';
+    str = './results/MMD_fig1_psd1';
     print(gcf, '-depsc', str);      command = sprintf('epstopdf %s.eps',str);      system(command);
     
-    
+    res = sig-Sig1;
+    XC = xcorr(res)/length(res);
+    XC = XC/norm(XC);
+    LL = length(XC);
+    pic = figure;
+    plot([-(LL-1)/2:(LL-1)/2],XC,'b'); axis tight;  ylabel('autocorrelation');
+    pbaspect([1 1 1]); set(pic, 'Position', [200, 200, 200, 200]);
+    saveas(pic,'./results/MMD_fig1_psd2.fig');
+    set(gca, 'FontSize', 16);
+    b=get(gca);
+    set(b.XLabel, 'FontSize', 16);set(b.YLabel, 'FontSize', 16);set(b.ZLabel, 'FontSize', 16);set(b.Title, 'FontSize', 16);
+    str = './results/MMD_fig1_psd2';
+    print(gcf, '-depsc', str);      command = sprintf('epstopdf %s.eps',str);      system(command);
     
     XC = xcorr(randn(size(res)))/length(res);
     XC = XC/norm(XC);
     pic = figure;
     plot([-(LL-1)/2:(LL-1)/2],XC,'b'); axis tight;  ylabel('autocorrelation');
     pbaspect([1 1 1]); set(pic, 'Position', [200, 200, 200, 200]); 
-    saveas(pic,'./results/RDSA_fig1_2_2_psd3.fig');
+    saveas(pic,'./results/MMD_fig1_psd3.fig');
     set(gca, 'FontSize', 16);
     b=get(gca);
     set(b.XLabel, 'FontSize', 16);set(b.YLabel, 'FontSize', 16);set(b.ZLabel, 'FontSize', 16);set(b.Title, 'FontSize', 16);
-    str = './results/RDSA_fig1_2_2_psd3';
+    str = './results/MMD_fig1_psd3';
     print(gcf, '-depsc', str);      command = sprintf('epstopdf %s.eps',str);      system(command);
 end
-
 

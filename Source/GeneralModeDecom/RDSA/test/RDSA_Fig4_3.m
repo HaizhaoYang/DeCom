@@ -1,4 +1,4 @@
-% This code generate Figure 3 in the paper 
+% This code generate Figure 4 in the paper 
 % "A Fast Algorithm for Multiresolution Mode Decomposition"
 % by Haizhao Yang.
 
@@ -85,11 +85,11 @@ if (1)
         end
     end
     spd = t2./t1;
-    save ./results/RDSA_fig3_3.mat;
+    save ./results/RDSA_fig4_3.mat;
 end
 
 if (1)
-    load ./results/RDSA_fig3_3.mat;
+    load ./results/RDSA_fig4_3.mat;
     
     pic = figure;
     plot(log2(NN),log2(t1(:,1))','r-','LineWidth',2);
@@ -97,7 +97,7 @@ if (1)
     plot(log2(NN),log2(t2(:,1))','b-','LineWidth',2);
     legend('RDBR','RDSA');
     axis square; xlabel('log_2(L)');ylabel('log_2(time)');
-    str = sprintf('./results/RDSA_fig3_3');
+    str = sprintf('./results/RDSA_fig4_3');
     saveas(pic,[str,'.fig']);
     set(gca, 'FontSize', 16);
     b=get(gca);

@@ -1,6 +1,7 @@
-% Multiresolution mode decomposition for a real PPG signal.
-% Figure 12, 13, 14 in the paper
-% "A Fast Algorithm for Multiresolution Mode Decomposition"
+% Adaptive mode decomposition for a real PPG signal.
+%
+% Reference:
+% "Multiresolution Mode Decomposition (MMD) for Adaptive Time Series Analysis"
 % by Haizhao Yang.
 
 if (1)
@@ -67,13 +68,13 @@ if (1)
     Hcoef{2}.a
     Hcoef{1}.b
     Hcoef{2}.b
-    save('./results/RDSA_fig10.mat','-v7.3');
+    save('./results/MMD_fig12.mat','-v7.3');
 end
 
 if (1)
-    load ./results/RDSA_fig10.mat;
+    load ./results/MMD_fig12.mat;
     Ntotal = length(signal.pleth.y);
-    N1 = N/4+1; N2 = 3*N/4;
+    N1 = 1; N2 = N;
     
     xvec = (N1:N2)/Ntotal*480;
     
@@ -87,7 +88,7 @@ if (1)
     set(gca, 'FontSize', 16);
     b=get(gca);
     set(b.XLabel, 'FontSize', 16);set(b.YLabel, 'FontSize', 16);set(b.ZLabel, 'FontSize', 16);set(b.Title, 'FontSize', 16);
-    str = sprintf('./results/RDSA_fig10_%d',8+cnt-1); saveas(pic,str);
+    str = sprintf('./results/MMD_fig18_%d',8+cnt-1); saveas(pic,str);
     print(gcf, '-depsc', str);   command = sprintf('epstopdf %s.eps',str);      system(command);
     
     
@@ -101,7 +102,7 @@ if (1)
     set(gca, 'FontSize', 16);
     b=get(gca);
     set(b.XLabel, 'FontSize', 16);set(b.YLabel, 'FontSize', 16);set(b.ZLabel, 'FontSize', 16);set(b.Title, 'FontSize', 16);
-    str = sprintf('./results/RDSA_fig10_%d',10+cnt-1); saveas(pic,str);
+    str = sprintf('./results/MMD_fig18_%d',10+cnt-1); saveas(pic,str);
     print(gcf, '-depsc', str);   command = sprintf('epstopdf %s.eps',str);      system(command);
     
     
@@ -112,9 +113,9 @@ if (1)
         set(gca, 'FontSize', 32);
         b=get(gca);
         set(b.XLabel, 'FontSize', 32);set(b.YLabel, 'FontSize', 32);set(b.ZLabel, 'FontSize', 32);set(b.Title, 'FontSize', 32);
-        tit = sprintf('./results/RDSA_fig10_%d_shapeCn_%d.fig',cnt1,1);
+        tit = sprintf('./results/MMD_fig18_%d_shapeCn_%d.fig',cnt1,1);
         saveas(pic,tit);
-        str = sprintf('./results/RDSA_fig10_%d_shapeCn_%d',cnt1,1);
+        str = sprintf('./results/MMD_fig18_%d_shapeCn_%d',cnt1,1);
         print(gcf, '-depsc', str);   command = sprintf('epstopdf %s.eps',str);      system(command);
         
         LL = length(shape{cnt1}.s0);
@@ -123,9 +124,9 @@ if (1)
         set(gca, 'FontSize', 32);
         b=get(gca);
         set(b.XLabel, 'FontSize', 32);set(b.YLabel, 'FontSize', 32);set(b.ZLabel, 'FontSize', 32);set(b.Title, 'FontSize', 32);
-        tit = sprintf('./results/RDSA_fig10_%d_shapeCn_%d.fig',cnt1,-1);
+        tit = sprintf('./results/MMD_fig18_%d_shapeCn_%d.fig',cnt1,-1);
         saveas(pic,tit);
-        str = sprintf('./results/RDSA_fig10_%d_shapeCn_%d',cnt1,-1);
+        str = sprintf('./results/MMD_fig18_%d_shapeCn_%d',cnt1,-1);
         print(gcf, '-depsc', str);   command = sprintf('epstopdf %s.eps',str);      system(command);
         
         LL = length(shape{cnt1}.s0);
@@ -133,10 +134,10 @@ if (1)
         title('remove');axis square;
         set(gca, 'FontSize', 32);
         b=get(gca);
-        set(b.XLabel, 'FontSize', 32);set(b.YLabel, 'FontS2^{15}ize', 32);set(b.ZLabel, 'FontSize', 32);set(b.Title, 'FontSize', 32);
-        tit = sprintf('./results/RDSA_fig10_%d_shapeSn_%d.fig',cnt1,1);
+        set(b.XLabel, 'FontSize', 32);set(b.YLabel, 'FontSize', 32);set(b.ZLabel, 'FontSize', 32);set(b.Title, 'FontSize', 32);
+        tit = sprintf('./results/MMD_fig18_%d_shapeSn_%d.fig',cnt1,1);
         saveas(pic,tit);
-        str = sprintf('./results/RDSA_fig10_%d_shapeSn_%d',cnt1,1);
+        str = sprintf('./results/MMD_fig18_%d_shapeSn_%d',cnt1,1);
         print(gcf, '-depsc', str);   command = sprintf('epstopdf %s.eps',str);      system(command);
         
         
@@ -146,9 +147,9 @@ if (1)
         set(gca, 'FontSize', 32);
         b=get(gca);
         set(b.XLabel, 'FontSize', 32);set(b.YLabel, 'FontSize', 32);set(b.ZLabel, 'FontSize', 32);set(b.Title, 'FontSize', 32);
-        tit = sprintf('./results/RDSA_fig10_%d_shapeSn_%d.fig',cnt1,-1);
+        tit = sprintf('./results/MMD_fig18_%d_shapeSn_%d.fig',cnt1,-1);
         saveas(pic,tit);
-        str = sprintf('./results/RDSA_fig10_%d_shapeSn_%d',cnt1,-1);
+        str = sprintf('./results/MMD_fig18_%d_shapeSn_%d',cnt1,-1);
         print(gcf, '-depsc', str);   command = sprintf('epstopdf %s.eps',str);      system(command);
         
         LL = length(shape{cnt1}.s0);
@@ -157,9 +158,9 @@ if (1)
         set(gca, 'FontSize', 32);
         b=get(gca);
         set(b.XLabel, 'FontSize', 32);set(b.YLabel, 'FontSize', 32);set(b.ZLabel, 'FontSize', 32);set(b.Title, 'FontSize', 32);
-        tit = sprintf('./results/RDSA_fig10_%d_shape_%d.fig',cnt1,0);
+        tit = sprintf('./results/MMD_fig18_%d_shape_%d.fig',cnt1,0);
         saveas(pic,tit);
-        str = sprintf('./results/RDSA_fig10_%d_shape_%d',cnt1,0);
+        str = sprintf('./results/MMD_fig18_%d_shape_%d',cnt1,0);
         print(gcf, '-depsc', str);   command = sprintf('epstopdf %s.eps',str);      system(command);
     end
     
@@ -191,14 +192,14 @@ if (1)
     
     pic = figure;
     plot(xvec,comp{1}(N1:N2),'b'); hold on; sigy = comp{1}(N1:N2);
-    axis tight; xlabel('time');ylabel('signal intensity');
+    plot(xvec(posp),sigy(posp),'k.');axis tight; xlabel('time');ylabel('signal intensity');
     pbaspect([10 1 1]); set(pic, 'Position', [200, 200, 1200, 200]);axis([N1/Ntotal*480, N2/Ntotal*480,-15,15]);
     xlabel('time'); ylabel('frequency');
-    saveas(pic,'./results/RDSA_fig10_comp1.fig');
+    saveas(pic,'./results/MMD_fig18_comp1.fig');
     set(gca, 'FontSize', 16);
     b=get(gca);
     set(b.XLabel, 'FontSize', 16);set(b.YLabel, 'FontSize', 16);set(b.ZLabel, 'FontSize', 16);set(b.Title, 'FontSize', 16);
-    str = './results/RDSA_fig10_comp1';
+    str = './results/MMD_fig18_comp1';
     print(gcf, '-depsc', str);      command = sprintf('epstopdf %s.eps',str);      system(command);
     
     
@@ -209,23 +210,23 @@ if (1)
     plot(xvec(posp(posp2)),sigy(posp(posp2)),'k.');axis tight; xlabel('time');ylabel('signal intensity');
     % pbaspect([10 1 1]); set(pic, 'Position', [200, 200, 1200, 200]);axis([N1/Ntotal*480, N2/Ntotal*480,-15,15]);
     xlabel('time'); ylabel('frequency');
-    saveas(pic,'./results/RDSA_fig10_comp1k.fig');
+    saveas(pic,'./results/MMD_fig18_comp1k.fig');
     set(gca, 'FontSize', 16);
     b=get(gca);
     set(b.XLabel, 'FontSize', 16);set(b.YLabel, 'FontSize', 16);set(b.ZLabel, 'FontSize', 16);set(b.Title, 'FontSize', 16);
-    str = './results/RDSA_fig10_comp1k';
+    str = './results/MMD_fig18_comp1k';
     print(gcf, '-depsc', str);      command = sprintf('epstopdf %s.eps',str);      system(command);
     
     pic = figure;
     plot(xvec,comp{2}(N1:N2),'b'); hold on; sigy = comp{2}(N1:N2);
-    axis tight; xlabel('time');ylabel('signal intensity');
+    plot(xvec(posp),sigy(posp),'k.');axis tight; xlabel('time');ylabel('signal intensity');
     pbaspect([10 1 1]); set(pic, 'Position', [200, 200, 1200, 200]);axis([N1/Ntotal*480, N2/Ntotal*480,-15,15]);
     xlabel('time'); ylabel('intensity');
-    saveas(pic,'./results/RDSA_fig10_comp2.fig');
+    saveas(pic,'./results/MMD_fig18_comp2.fig');
     set(gca, 'FontSize', 16);
     b=get(gca);
     set(b.XLabel, 'FontSize', 16);set(b.YLabel, 'FontSize', 16);set(b.ZLabel, 'FontSize', 16);set(b.Title, 'FontSize', 16);
-    str = './results/RDSA_fig10_comp2';
+    str = './results/MMD_fig18_comp2';
     print(gcf, '-depsc', str);      command = sprintf('epstopdf %s.eps',str);      system(command);
     
     pic = figure;
@@ -235,45 +236,46 @@ if (1)
     plot(xvec(posp(posp2)),sigy(posp(posp2)),'k.');axis tight; xlabel('time');ylabel('signal intensity');
     % pbaspect([10 1 1]); set(pic, 'Position', [200, 200, 1200, 200]);axis([N1/Ntotal*480, N2/Ntotal*480,-15,15]);
     xlabel('time'); ylabel('frequency');
-    saveas(pic,'./results/RDSA_fig10_comp2k.fig');
+    saveas(pic,'./results/MMD_fig18_comp2k.fig');
     set(gca, 'FontSize', 16);
     b=get(gca);
     set(b.XLabel, 'FontSize', 16);set(b.YLabel, 'FontSize', 16);set(b.ZLabel, 'FontSize', 16);set(b.Title, 'FontSize', 16);
-    str = './results/RDSA_fig10_comp2k';
+    str = './results/MMD_fig18_comp2k';
     print(gcf, '-depsc', str);      command = sprintf('epstopdf %s.eps',str);      system(command);
+    pause;
     
     pic = figure;
     plot(xvec,Sig(N1:N2),'r');
     pbaspect([10 1 1]);set(pic, 'Position', [200, 200, 1200, 200]);axis([N1/Ntotal*480, N2/Ntotal*480,-15,15]);
     hold on
     plot(xvec,sig(N1:N2),'b'); axis tight; xlabel('time');ylabel('signal intensity');
-    saveas(pic,'./results/RDSA_fig10_sum.fig');
+    saveas(pic,'./results/MMD_fig18_sum.fig');
     set(gca, 'FontSize', 16);
     b=get(gca);
     set(b.XLabel, 'FontSize', 16);set(b.YLabel, 'FontSize', 16);set(b.ZLabel, 'FontSize', 16);set(b.Title, 'FontSize', 16);
-    str = './results/RDSA_fig10_sum';
+    str = './results/MMD_fig18_sum';
     print(gcf, '-depsc', str);      command = sprintf('epstopdf %s.eps',str);      system(command);
     
     pic = figure;
     plot(xvec,sig(N1:N2),'b'); hold on; sigy = sig(N1:N2);
-    axis tight; xlabel('time');ylabel('signal intensity');
+    plot(xvec(posp),sigy(posp),'k.');axis tight; xlabel('time');ylabel('signal intensity');
     pbaspect([10 1 1]); set(pic, 'Position', [200, 200, 1200, 200]);axis([N1/Ntotal*480, N2/Ntotal*480,-15,15]);
-    saveas(pic,'./results/RDSA_fig10_org.fig');
+    saveas(pic,'./results/MMD_fig18_org.fig');
     set(gca, 'FontSize', 16);
     b=get(gca);
     set(b.XLabel, 'FontSize', 16);set(b.YLabel, 'FontSize', 16);set(b.ZLabel, 'FontSize', 16);set(b.Title, 'FontSize', 16);
-    str = './results/RDSA_fig10_org';
+    str = './results/MMD_fig18_org';
     print(gcf, '-depsc', str);      command = sprintf('epstopdf %s.eps',str);      system(command);
     
     pic = figure;
     plot(xvec,sig(N1:N2)-Sig(N1:N2),'b'); hold on; sigy = sig(N1:N2)-Sig(N1:N2);
-    axis tight; xlabel('time');ylabel('signal intensity');
+    plot(xvec(posp),sigy(posp),'k.');axis tight; xlabel('time');ylabel('signal intensity');
     pbaspect([10 1 1]); set(pic, 'Position', [200, 200, 1200, 200]);%axis([N1/Ntotal*480, N2/Ntotal*480,-15,15]);
-    saveas(pic,'./results/RDSA_fig10_res.fig');
+    saveas(pic,'./results/MMD_fig18_res.fig');
     set(gca, 'FontSize', 16);
     b=get(gca);
     set(b.XLabel, 'FontSize', 16);set(b.YLabel, 'FontSize', 16);set(b.ZLabel, 'FontSize', 16);set(b.Title, 'FontSize', 16);
-    str = './results/RDSA_fig10_res';
+    str = './results/MMD_fig18_res';
     print(gcf, '-depsc', str);      command = sprintf('epstopdf %s.eps',str);      system(command);
     
 end

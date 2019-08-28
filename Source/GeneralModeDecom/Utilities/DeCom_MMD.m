@@ -14,7 +14,7 @@ function [shape,component,Hcoef,flag,idx,iter,iterDR] = DeCom_MMD(sig,x,numGroup
 % opt       - options for the algorithm
 % opt.numSweep is the maximum number of sweeping in the multiresolution
 % frequency domain
-% opt.accuracy is the accuracy parameter for the convergence of HMD
+% opt.accuracy is the accuracy parameter for the convergence of MMD
 % opt.eps_diff is the accuracy parameter for convergence
 % opt.ampErrBandWidth is the band width of the amplitude estimation error in
 % the frequency domain.
@@ -57,7 +57,7 @@ function [shape,component,Hcoef,flag,idx,iter,iterDR] = DeCom_MMD(sig,x,numGroup
 %             multiresolution expansion coefficients for the ith component;
 %             Hcoef{i}.a0 for a_{0}, Hcoef{i}.a(n) for a_{n} and
 %             Hcoef{i}.b(n) for b_{n}.
-% flag(1)   - 0, HMD achieves target depth; 1, HMD stops with a smaller
+% flag(1)   - 0, MMD achieves target depth; 1, MMD stops with a smaller
 %             depth
 % flag(2)   - 0, numGroup is equal to the exact number of components
 %             -1, numGroup is smaller than the exact number of components

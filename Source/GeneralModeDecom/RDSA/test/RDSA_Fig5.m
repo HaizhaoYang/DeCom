@@ -1,11 +1,9 @@
 % A real ECG signal to validate the effectness of the adaptive mode
-% decomposition model.
-%
-% Reference:
-% "Multiresolution Mode Decomposition (MMD) for Adaptive Time Series Analysis"
+% decomposition model in the paper, Figure 5, 6 , 7.
+% "A Fast Algorithm for Multiresolution Mode Decomposition"
 % by Haizhao Yang.
 
-if (0)
+if (1)
     close all;
     clear all;
     %% generate signal
@@ -54,24 +52,30 @@ if (0)
     opt.eps_error = 1e-6;
     opt.show = 0;
     opt.iterStyle = 'GS';
-    opt.shapeMethod = 2;
+    opt.shapeMethod = 1;
     opt.eps_diff = 1e-6;
     opt.numSweep = 10;
     
-    opt.para.nknots = 20;
-    opt.para.knotremoval_factor= 1.0001;
-    opt.para.order = 3;
-    opt.para.Ls = 1000;
+    switch opt.shapeMethod
+        case 1
+            opt.para.Ls=5000;
+            opt.para.bandWidth = 150;
+        case 2
+            opt.para.nknots = 20;
+            opt.para.knotremoval_factor= 1.0001;
+            opt.para.order = 3;
+            opt.para.Ls = 1000;
+    end
     
     
     Ntotal = N;
     N1 = N/8; N2 = N/2;
-    save('./results/MMD_fig10.mat','-v7.3');
+    save('./results/RDSA_fig5.mat','-v7.3');
     
     pic = figure;
     plot((N1:N2)/Ntotal*480,sig(N1:N2),'b'); axis tight; xlabel('time');ylabel('signal intensity');
     pbaspect([10 1 1]); set(pic, 'Position', [200, 200, 1200, 200]);%axis([N1/Ntotal*480, N2/Ntotal*480,-5,5]);
-    str = sprintf('./results/MMD_fig10_org');
+    str = sprintf('./results/RDSA_fig5_org');
     saveas(pic,[str,'.fig']);
     set(gca, 'FontSize', 16);
     b=get(gca);
@@ -79,8 +83,8 @@ if (0)
     print(gcf, '-depsc', str);      command = sprintf('epstopdf %s.eps',str);      system(command);
 end
 
-if (0)
-    load ./results/MMD_fig10.mat;
+if (1)
+    load ./results/RDSA_fig5.mat;
     vec = 0:20:40;
     shape = cell(1,numel(vec));
     comp = cell(1,numel(vec));
@@ -93,8 +97,7 @@ if (0)
         pic = figure;
         plot((N1:N2)/Ntotal*480,comp{cnt}{1}(N1:N2),'b'); axis tight; xlabel('time');ylabel('signal intensity');
         pbaspect([10 1 1]); set(pic, 'Position', [200, 200, 1200, 200]);%axis([N1/Ntotal*480, N2/Ntotal*480,-5,5]);
-        xlabel('time'); ylabel('frequency');
-        str = sprintf('./results/MMD_fig10_comp_bw_%d',cntb);
+        str = sprintf('./results/RDSA_fig5_comp_bw_%d',cntb);
         saveas(pic,[str,'.fig']);
         set(gca, 'FontSize', 16);
         b=get(gca);
@@ -105,27 +108,52 @@ if (0)
         pic = figure;
         plot((N1:N2)/Ntotal*480,sig(N1:N2)-comp{cnt}{1}(N1:N2),'b'); axis tight; xlabel('time');ylabel('signal intensity');
         pbaspect([10 1 1]); set(pic, 'Position', [200, 200, 1200, 200]);%axis([N1/Ntotal*480, N2/Ntotal*480,-5,5]);
-        str = sprintf('./results/MMD_fig10_comp_res_%d',cntb);
+        str = sprintf('./results/RDSA_fig5_comp_res_%d',cntb);
         saveas(pic,[str,'.fig']);
         set(gca, 'FontSize', 16);
         b=get(gca);
         set(b.XLabel, 'FontSize', 16);set(b.YLabel, 'FontSize', 16);set(b.ZLabel, 'FontSize', 16);set(b.Title, 'FontSize', 16);
         print(gcf, '-depsc', str);      command = sprintf('epstopdf %s.eps',str);      system(command);
     end
-    save('./results/MMD_fig10.mat','-v7.3');
+    
+        
+    res = sig-comp{cnt}{1};
+    XC = xcorr(res)/length(res);
+    pic = figure;
+    plot(XC,'b'); axis tight; xlabel('frequency');ylabel('power spectral density');
+    saveas(pic,'./results/RDSA_fig5_psd.fig');
+    set(gca, 'FontSize', 16);
+    b=get(gca);
+    set(b.XLabel, 'FontSize', 16);set(b.YLabel, 'FontSize', 16);set(b.ZLabel, 'FontSize', 16);set(b.Title, 'FontSize', 16);
+    str = './results/RDSA_fig5_psd';
+    print(gcf, '-depsc', str);      command = sprintf('epstopdf %s.eps',str);      system(command);
+    
+    
+    
+    XC = xcorr(randn(size(res)))/length(res);
+    pic = figure;
+    plot(XC,'b'); axis tight; xlabel('frequency');ylabel('power spectral density');
+    saveas(pic,'./results/RDSA_fig5_psd3.fig');
+    set(gca, 'FontSize', 16);
+    b=get(gca);
+    set(b.XLabel, 'FontSize', 16);set(b.YLabel, 'FontSize', 16);set(b.ZLabel, 'FontSize', 16);set(b.Title, 'FontSize', 16);
+    str = './results/RDSA_fig5_psd3';
+    print(gcf, '-depsc', str);      command = sprintf('epstopdf %s.eps',str);      system(command);
+    save('./results/RDSA_fig5.mat','-v7.3');
+    save('./results/RDSA_fig5.mat','-v7.3');
 end
 
 if (1)
-    load ./results/MMD_fig10.mat;
+    load ./results/RDSA_fig5.mat;
     LL = length(shape{cnt}{1}.s0);
     pic = figure;plot(0:1/LL:(1-1/LL),shape{cnt}{1}.s0*Hcoef{cnt}{1}.a0);
     title('remove');axis square;
     set(gca, 'FontSize', 32);
     b=get(gca);
     set(b.XLabel, 'FontSize', 32);set(b.YLabel, 'FontSize', 32);set(b.ZLabel, 'FontSize', 32);set(b.Title, 'FontSize', 32);
-    tit = sprintf('./results/MMD_fig10_shape_%d.fig',0);
+    tit = sprintf('./results/RDSA_fig5_shape_%d.fig',0);
     saveas(pic,tit);
-    str = sprintf('./results/MMD_fig10_shape_%d',0);
+    str = sprintf('./results/RDSA_fig5_shape_%d',0);
     print(gcf, '-depsc', str);   command = sprintf('epstopdf %s.eps',str);      system(command);
     
     LL = length(shape{cnt}{1}.scn{1});
@@ -134,9 +162,9 @@ if (1)
     set(gca, 'FontSize', 32);
     b=get(gca);
     set(b.XLabel, 'FontSize', 32);set(b.YLabel, 'FontSize', 32);set(b.ZLabel, 'FontSize', 32);set(b.Title, 'FontSize', 32);
-    tit = sprintf('./results/MMD_fig10_shapeCn_%d.fig',1);
+    tit = sprintf('./results/RDSA_fig5_shapeCn_%d.fig',1);
     saveas(pic,tit);
-    str = sprintf('./results/MMD_fig10_shapeCn_%d',1);
+    str = sprintf('./results/RDSA_fig5_shapeCn_%d',1);
     print(gcf, '-depsc', str);   command = sprintf('epstopdf %s.eps',str);      system(command);
     
     LL = length(shape{cnt}{1}.ssn{1});
@@ -145,9 +173,9 @@ if (1)
     set(gca, 'FontSize', 32);
     b=get(gca);
     set(b.XLabel, 'FontSize', 32);set(b.YLabel, 'FontSize', 32);set(b.ZLabel, 'FontSize', 32);set(b.Title, 'FontSize', 32);
-    tit = sprintf('./results/MMD_fig10_shapeSn_%d.fig',1);
+    tit = sprintf('./results/RDSA_fig5_shapeSn_%d.fig',1);
     saveas(pic,tit);
-    str = sprintf('./results/MMD_fig10_shapeSn_%d',1);
+    str = sprintf('./results/RDSA_fig5_shapeSn_%d',1);
     print(gcf, '-depsc', str);   command = sprintf('epstopdf %s.eps',str);      system(command);
     
     LL = length(shape{cnt}{1}.scn{2});
@@ -156,9 +184,9 @@ if (1)
     set(gca, 'FontSize', 32);
     b=get(gca);
     set(b.XLabel, 'FontSize', 32);set(b.YLabel, 'FontSize', 32);set(b.ZLabel, 'FontSize', 32);set(b.Title, 'FontSize', 32);
-    tit = sprintf('./results/MMD_fig10_shapeCn_%d.fig',-1);
+    tit = sprintf('./results/RDSA_fig5_shapeCn_%d.fig',-1);
     saveas(pic,tit);
-    str = sprintf('./results/MMD_fig10_shapeCn_%d',-1);
+    str = sprintf('./results/RDSA_fig5_shapeCn_%d',-1);
     print(gcf, '-depsc', str);   command = sprintf('epstopdf %s.eps',str);      system(command);
     
     LL = length(shape{cnt}{1}.ssn{2});
@@ -167,11 +195,55 @@ if (1)
     set(gca, 'FontSize', 32);
     b=get(gca);
     set(b.XLabel, 'FontSize', 32);set(b.YLabel, 'FontSize', 32);set(b.ZLabel, 'FontSize', 32);set(b.Title, 'FontSize', 32);
-    tit = sprintf('./results/MMD_fig10_shapeSn_%d.fig',-1);
+    tit = sprintf('./results/RDSA_fig5_shapeSn_%d.fig',-1);
     saveas(pic,tit);
-    str = sprintf('./results/MMD_fig10_shapeSn_%d',-1);
+    str = sprintf('./results/RDSA_fig5_shapeSn_%d',-1);
     print(gcf, '-depsc', str);   command = sprintf('epstopdf %s.eps',str);      system(command);
     
+        opt.maxiter = 200;
+    opt.eps_error = 1e-6;
+    opt.show = 0;
+    opt.iterStyle = 'GS';
+    opt.shapeMethod = 1;
+    opt.eps_diff = 1e-6;
+    opt.ampErrBandWidth = 0;
+    opt.numSweep = 1;
+    
+    switch opt.shapeMethod
+        case 1
+            opt.para.Ls=5000;
+            opt.para.bandWidth = 150;
+        case 2
+            opt.para.nknots = 20;
+            opt.para.knotremoval_factor= 1.0001;
+            opt.para.order = 3;
+            opt.para.Ls = 1000;
+    end
+    
+    [shape,comp] = DeCom_MMD(sig,x,numGroup,insAmp,insFreq,insPhase,opt);
+    
+    
+    res = sig-comp{1};
+    
+    pic = figure;
+    plot((N1:N2)/Ntotal*480,res(N1:N2),'b'); axis tight; xlabel('time');ylabel('signal intensity');
+    pbaspect([10 1 1]); set(pic, 'Position', [200, 200, 1200, 200]);%axis([N1/Ntotal*480, N2/Ntotal*480,-5,5]);
+    str = sprintf('./results/RDSA_fig5_comp_res0',cntb);
+    saveas(pic,[str,'.fig']);
+    set(gca, 'FontSize', 16);
+    b=get(gca);
+    set(b.XLabel, 'FontSize', 16);set(b.YLabel, 'FontSize', 16);set(b.ZLabel, 'FontSize', 16);set(b.Title, 'FontSize', 16);
+    print(gcf, '-depsc', str);      command = sprintf('epstopdf %s.eps',str);      system(command);
+    
+    XC = xcorr(res)/length(res);
+    pic = figure;
+    plot(XC,'b'); axis tight; xlabel('frequency');ylabel('power spectral density');
+    saveas(pic,'./results/RDSA_fig5_psd2.fig');
+    set(gca, 'FontSize', 16);
+    b=get(gca);
+    set(b.XLabel, 'FontSize', 16);set(b.YLabel, 'FontSize', 16);set(b.ZLabel, 'FontSize', 16);set(b.Title, 'FontSize', 16);
+    str = './results/RDSA_fig5_psd2';
+    print(gcf, '-depsc', str);      command = sprintf('epstopdf %s.eps',str);      system(command);
 end
 
 

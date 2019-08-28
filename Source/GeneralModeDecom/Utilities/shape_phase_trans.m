@@ -8,7 +8,7 @@ trans_shape = est_shape;
 
 for i = 1:n-1
     trans_est_shape = circshift(est_shape.',i).';
-    trans_error = norm(trans_est_shape-true_shape);
+    trans_error = norm(trans_est_shape-true_shape)/sqrt(n);
     if trans_error<error
         error = trans_error;
         trans_shape= trans_est_shape;
