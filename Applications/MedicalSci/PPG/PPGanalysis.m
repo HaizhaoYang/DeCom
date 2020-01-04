@@ -47,7 +47,6 @@ if (1)
     
     % correct phases
     insPhase = phaseShift(insPhase,peaks);
-    save('./results/MMD_fig1.mat','-v7.3');
 end
 
 N1 = 1; N2 = N;
@@ -66,7 +65,6 @@ print(gcf, '-depsc', str);      command = sprintf('epstopdf %s.eps',str);      s
 % perform MMD
 
 if (1)
-    load ./results/MMD_fig1.mat;
     opt.maxiter = 200;
     opt.eps_error = 1e-6;
     opt.show = 0;
@@ -133,7 +131,6 @@ end
 % perform GMD
 
 if (1)
-    load ./results/MMD_fig1.mat;
     opt.maxiter = 200;
     opt.eps_error = 1e-6;
     opt.show = 0;
